@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +20,53 @@ namespace Unsalted
         }
 
         // GET: Allergies
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Allergy.ToListAsync());
+            //return View(await _context.Allergy.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["IDSortParm"] = sortOrder == "ID" ? "ID_desc" : "ID";
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "allergen_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var allergies = from a in _context.Allergy select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allergies = allergies.Where(s => s.Allergen.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "ID_desc":
+                    allergies = allergies.OrderByDescending(s => s.ID);
+                    break;
+                case "ID":
+                    allergies = allergies.OrderBy(s => s.ID);
+                    break;
+                case "allergen_desc":
+                    allergies = allergies.OrderByDescending(s => s.Allergen);
+                    break;
+                default:
+                    allergies = allergies.OrderBy(s => s.Allergen);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Allergy>.CreateAsync(allergies.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Allergies/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,6 +85,7 @@ namespace Unsalted
         }
 
         // GET: Allergies/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +108,7 @@ namespace Unsalted
         }
 
         // GET: Allergies/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -116,6 +160,7 @@ namespace Unsalted
         }
 
         // GET: Allergies/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

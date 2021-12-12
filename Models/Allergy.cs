@@ -6,6 +6,10 @@ namespace Unsalted.Models
 {
     public class Allergy
     {
+        public Allergy()
+        {
+            Food = new HashSet<Food>();
+        }
         public int ID { get; set; }
         
         public string Allergen { get; set; }

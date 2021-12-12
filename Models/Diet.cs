@@ -6,6 +6,10 @@ namespace Unsalted.Models
 {
     public class Diet
     {
+        public Diet()
+        {
+            Food = new HashSet<Food>();
+        }
         public int ID { get; set; }
 
         public string Type { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +20,14 @@ namespace Unsalted
         }
 
         // GET: Diets
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Diet.ToListAsync());
         }
 
         // GET: Diets/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,6 +46,7 @@ namespace Unsalted
         }
 
         // GET: Diets/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +69,7 @@ namespace Unsalted
         }
 
         // GET: Diets/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -116,6 +121,7 @@ namespace Unsalted
         }
 
         // GET: Diets/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

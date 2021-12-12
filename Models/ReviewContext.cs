@@ -17,11 +17,25 @@ namespace Unsalted.Models
         {
             modelBuilder.Entity<Allergy>().HasData(
                 new Allergy
-                { 
+                {
                     ID = 1,
                     Allergen = "Gluten",
                     Examples = "Bread, Wheat, Cereal, etc.",
                     Reactions = "Stomach ache, Rash, etc."
+                },
+                new Allergy
+                {
+                    ID = 2,
+                    Allergen = "Lactose",
+                    Examples = "Milk, Cheese, Yogurt, etc.",
+                    Reactions = "Bloating, Flatulence, etc."
+                },
+                new Allergy
+                {
+                    ID = 3,
+                    Allergen = "Egg",
+                    Examples = "Bread, Wheat, Cereal, etc.",
+                    Reactions = "Eczema, Hives, Nausea, etc."
                 }
             );
             modelBuilder.Entity<Diet>().HasData(
@@ -50,15 +64,15 @@ namespace Unsalted.Models
             );
 
             //Composite key
-            modelBuilder.Entity<Food>().HasKey(d => new { d.DietID, d.AllergyID });
-            modelBuilder.Entity<Food>().HasOne(dl => dl.Diet)
-                .WithMany(d => d.Food).HasForeignKey(dl => dl.DietID);
-            modelBuilder.Entity<Food>().HasOne(dl => dl.Allergen)
-                .WithMany(d => d.Food).HasForeignKey(dl => dl.AllergyID);
+            //modelBuilder.Entity<Food>().HasKey(d => new { d.DietID, d.AllergyID });
+            //modelBuilder.Entity<Food>().HasOne(dl => dl.Diet)
+            //    .WithMany(d => d.Food).HasForeignKey(dl => dl.DietID);
+            //modelBuilder.Entity<Food>().HasOne(dl => dl.Allergen)
+            //    .WithMany(d => d.Food).HasForeignKey(dl => dl.AllergyID);
 
-            modelBuilder.Entity<Review>().HasKey(d => new { d.FoodID});
-            modelBuilder.Entity<Review>().HasOne(dl => dl.Food)
-                .WithMany(d => d.Review).HasForeignKey(dl => dl.FoodID);
+            //modelBuilder.Entity<Review>().HasKey(d => new { d.FoodID});
+            //modelBuilder.Entity<Review>().HasOne(dl => dl.Food)
+            //    .WithMany(d => d.Review).HasForeignKey(dl => dl.FoodID);
         }
 
 
